@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*
-	aww heck, here we go again
+	aww yeh, here we go again
 	Guess what? Yet another movement script!
 	By the quantum nanomachine computing cloud who set the repository up.
 */
@@ -19,8 +19,7 @@ public class Movement_Player : MonoBehaviour
 	public float jumpHeight; //Initial velocity of player's jump.
 	public float landingTime; //The amount of time after the player lands from a height before they can initiate another jump in seconds.
 	public float coyoteTime; //Time the player can jump after walking off an edge in seconds.
-	private bool canJump; //Checking if the player is able to jump.
-	private float yVel; //Y velocity, used for jumping.
+	public bool canJump; //Checking if the player is able to jump.
 
 	//Components
 	private CapsuleCollider2D mainCollider;
@@ -36,23 +35,42 @@ public class Movement_Player : MonoBehaviour
 		rb2D = GetComponent<Rigidbody2D>();
 	}
 
-	//Could you possibly guess what void Update() does?
-	void Update()
+	//FixedUpdate() is like Update() but synced to the physics or something.
+	void FixedUpdate()
 	{
 		//Horizontal Movement.
-		Vector2 nextMove = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0); //This is easier to edit than a MovePosition argument.
-		rb2D.MovePosition(rb2D.position + nextMove); //Physically moving the player. I use MovePosition instead of AddForce because I would like the player's movement to feel snappy and responsive, as this would improve game feel.
+		rb2D.AddForce(Input.GetAxisRaw("Horizontal") * moveSpeed * transform.right, ForceMode2D.Impulse); //Moving the player.
 
 		if (Input.GetButton("Jump") && canJump) //I bet you can't POSSIBLY guess what this does!!
 		{
-			yVel = jumpHeight; //OR THIS!!!!
-			canJump = false; //O R  T H I S ! ! ! ! ! !
+			canJump = false;
+			rb2D.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse); //OR THIS!!!!
+			StopCoroutine("CoyotyThyme"); //This is in case you walk off of a platform and land back on it before coyote time expires.
 		}
-		if (floorCollider.IsTouchingLayers())
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision) //Checking if we've touched something.
+	{
+		rb2D.drag = 5;
+		if (floorCollider.IsTouching(collision.collider)) //Checking if we've touched the floor and are not holding the jump button.
 		{
+			StopCoroutine("CoyotyThyme"); //See above.
 			canJump = true;
 		}
 	}
 
+	private void OnCollisionStay2D(Collision2D collision)
+	{ if (!canJump) { canJump = true; } }
 
+	private void OnCollisionExit2D(Collision2D collision)
+	{
+		StartCoroutine("CoyoteThyme");
+		rb2D.drag = 1;
+	}
+
+	IEnumerator CoyoteThyme()
+	{
+		yield return new WaitForSeconds(coyoteTime); //Wait for coyote time to expire
+		canJump = false; //You cannot jump.
+	}
 }
