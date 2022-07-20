@@ -15,10 +15,10 @@ TagManager:
   - 
   - Ground
   - Player
-  - Boolet Player
-  - Enenome
-  - Boolet Enenome
-  - 
+  - Enemy
+  - Projectile/Player
+  - Projectile/Enemy
+  - Projectile/Shootable
   - 
   - 
   - 

@@ -8,23 +8,47 @@ using UnityEngine;
 
 public class ShootyPlayer : MonoBehaviour
 {
-    [SerializeField] private ProjectilePooling PewPool;
+	public string WeaponType;
+	public Vector2 iniVel;
+	private bool isShootenanning;
 
-    public string WeaponType;
-    public Vector2 iniVel;
+	//Boolet Statz
+	public int pierceCount; //See ProjectileUniversal.cs.
+	public int damage;
+	public int gravity;
+	public float explodeRange;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	//GUNS GUNS GUNS! CLICK BANG AND THEIR LIMBS FALL OFF!
+	public float BooletsPerMinute; //How many projectiles your shootenanner spews out in a minute.
+	public int ammo; //How much ammunition your weapon has. Can only be refilled by picking up a new weapon. Peashooter has infinite ammo.
+	public float inaccuracy; //Shot deviation in m/s of elevation.
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetButtonDown("Fire1"))
+	//You know what void Start() does.
+	void Start()
+	{
+		
+	}
+
+	private string shootenany = "Fire1";
+	void Update()
+	{
+		if (Input.GetButtonDown(shootenany) && !isShootenanning)
 		{
-            PewPool.Shootenany(0, iniVel);
+			isShootenanning = true;
+			StartCoroutine("Shootenany");
 		}
-    }
+	}
+
+	IEnumerator Shootenany()
+	{
+		Vector2 initialVelocity = new Vector2(iniVel.x, iniVel.y + Random.Range(-inaccuracy, inaccuracy));
+		yield return new WaitForSeconds(60 / BooletsPerMinute);
+
+		if (Input.GetButton(shootenany))
+		{
+			ProjectilePooling.Instance.SpawnFromPool("Player Projectile", transform.position, initialVelocity, pierceCount, damage, gravity, explodeRange);
+			StartCoroutine("Shootenany");
+		}
+		else isShootenanning = false;
+	}
 }
