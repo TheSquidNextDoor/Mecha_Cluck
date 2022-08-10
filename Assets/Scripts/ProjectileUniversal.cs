@@ -48,5 +48,7 @@ public class ProjectileUniversal : MonoBehaviour
 				gameObject.SetActive(false); //Bullet returns to pool as it is not piercing anything.
 			}
 		}
+		if (collision.gameObject.layer == 8) //8 is the ground layer.
+		{ gameObject.SetActive(false); }
 	}
 }
