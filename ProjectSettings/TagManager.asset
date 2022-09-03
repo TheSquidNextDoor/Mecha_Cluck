@@ -19,8 +19,8 @@ TagManager:
   - Projectile/Player
   - Projectile/Enemy
   - Projectile/Shootable
-  - 
-  - 
+  - Triggers/Jump/Jump Up
+  - Triggers/Jump/JumpDown
   - 
   - 
   - 

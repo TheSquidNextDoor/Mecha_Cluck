@@ -39,7 +39,7 @@ public class Movement_Player : MonoBehaviour
 	void FixedUpdate()
 	{
 		//Horizontal Movement.
-		rb2D.AddForce(Input.GetAxisRaw("Horizontal") * moveSpeed * transform.right, ForceMode2D.Impulse); //Moving the player.
+		transform.Translate(Vector2.right * Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime); //Moving the player. No velocity for horizontal movement leads to more control.
 
 		if (Input.GetButton("Jump") && canJump) //I bet you can't POSSIBLY guess what this does!!
 		{
@@ -51,7 +51,6 @@ public class Movement_Player : MonoBehaviour
 
 	private void OnCollisionEnter2D(Collision2D collision) //Checking if we've touched something.
 	{
-		rb2D.drag = 5;
 		if (floorCollider.IsTouching(collision.collider)) //Checking if we've touched the floor and are not holding the jump button.
 		{
 			StopCoroutine("CoyotyThyme"); //See above.
@@ -60,12 +59,14 @@ public class Movement_Player : MonoBehaviour
 	}
 
 	private void OnCollisionStay2D(Collision2D collision)
-	{ if (!canJump) { canJump = true; } }
+	{ 
+		if (!canJump && !Input.GetButton("Jump")) { canJump = true; } //Checks if the player is unable to jump and if they're not jumping already.
+		//if (Input.GetAxis("Vertical") < 0.25) {  } was going to add ability to drop down platforms but i got lazy
+	}
 
 	private void OnCollisionExit2D(Collision2D collision)
 	{
 		StartCoroutine("CoyoteThyme");
-		rb2D.drag = 1;
 	}
 
 	IEnumerator CoyoteThyme()
