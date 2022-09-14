@@ -53,12 +53,24 @@ public class EnemyController : MonoBehaviour
 			{
 				bézierCurvePoints[0] = transform.position; //Position of this enemy.
 				bézierCurvePoints[1] = jumpTriggers.connectedTriggers[choosyMajigga].gameObject.transform.position; //Position of this enemy's destination.
-				bézierCurvePoints[2] = (bézierCurvePoints[0] + bézierCurvePoints[1]) / 2; //Position of the handle. FINISH THIS LATER PLZZ!!!!! Need to calculate additional height.
+				if (jumpTriggers.connectedTriggers[choosyMajigga].gameObject.transform.position.y < transform.position.y) //Position of the handle. Height is based off of something or idk.
+				{
+					bézierCurvePoints[2] = new Vector2(transform.position.x + bézierCurvePoints[1].x / 2, transform.position.y + (Vector2.Distance(bézierCurvePoints[1], transform.position) / 2));
+				}
+				else
+				{
+					bézierCurvePoints[2] = new Vector2(transform.position.x + bézierCurvePoints[1].x / 2, bézierCurvePoints[1].y + (Vector2.Distance(bézierCurvePoints[1], transform.position) / 2));
+				}
 			}
 		}
 		if (collision.gameObject.layer == 15) //15 is the jump down trigger. This enemy will jump down to the ground or another platform when passing through this trigger.
 		{
 
 		}
+	}
+
+	void doTheJump()
+	{
+
 	}
 }
