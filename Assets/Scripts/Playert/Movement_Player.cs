@@ -44,7 +44,7 @@ public class Movement_Player : MonoBehaviour
 		if (Input.GetButton("Jump") && canJump) //I bet you can't POSSIBLY guess what this does!!
 		{
 			canJump = false;
-			rb2D.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse); //OR THIS!!!!
+			rb2D.velocity = new Vector2(rb2D.velocity.x, jumpHeight); //Setting velocity of player.
 			StopCoroutine("CoyotyThyme"); //This is in case you walk off of a platform and land back on it before coyote time expires.
 		}
 	}
